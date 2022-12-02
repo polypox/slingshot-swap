@@ -15,6 +15,6 @@ pk = 'YOUR_KEY_HERE'
 **For the script to work, the account must already have more than 1.5 USDT.**
 
 ## Plans
-- [] Arbitrum support
-- [] multiple accounts support
-- [] more tokens
+- [ ] Arbitrum support
+- [ ] multiple accounts support
+- [ ] more tokens
