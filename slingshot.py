@@ -3,8 +3,24 @@ from termcolor import cprint
 from web3 import Web3
 from web3.middleware import geth_poa_middleware
 
-### Insert your private key
-pk = ''
+def getKeys(file_name: str) -> list:
+    keys = []
+    with open(file_name) as keys_file:
+        for line in keys_file:
+            key = line.strip()
+            if (key):
+                keys.append(key)
+    return keys
+
+def getAccounts(w3, keys: list) -> dict:
+    accounts = {}
+    for pk in keys:
+        try:
+            wallet_address = w3.eth.account.from_key(pk).address
+        except Exception as e:
+            cprint(f'ERROR occured while initializing account from private key \"{pk}\": {e}', 'red')
+        accounts[pk] = wallet_address
+    return accounts
 
 def trade(tf: str, tt: str, amount: int, wallet_address: str):
     url = 'https://slingshot.finance/api/v3/trade/'
@@ -34,6 +50,8 @@ def encodeSushi(tf: str, tt: str, amount: int) -> str:
         + '00000000000000000000000000000000000000000000000000000000000001f4'
     )
 
+keys_file = "private_keys.txt"
+
 rpc = 'https://polygon-rpc.com'
 
 contract_address = '0x07e56b727e0EAcFa53823977599905024c2de4F0'
@@ -52,45 +70,49 @@ w3.middleware_onion.inject(geth_poa_middleware, layer=0)
 
 contract = w3.eth.contract(address=contract_address, abi=abi)
 
-wallet = w3.eth.account.from_key(pk)
-wallet_address = wallet.address
+keys = getKeys(keys_file)
+cprint(f'+ {len(keys)} keys found', 'cyan')
+accounts = getAccounts(w3, keys)
+cprint(f'+ {len(accounts)} accounts found', 'cyan')
+for (pk, wallet_address) in accounts.items():
+    print(f'\n>>> Start swap for address {wallet_address}')
 
-nonce = w3.eth.getTransactionCount(wallet_address)
+    nonce = w3.eth.getTransactionCount(wallet_address)
 
-response = trade(
-    tf='0x'+usdt_address, 
-    tt='0x'+usdc_address, 
-    amount=amount,
-    wallet_address=wallet_address,
-)
+    response = trade(
+        tf='0x'+usdt_address, 
+        tt='0x'+usdc_address, 
+        amount=amount,
+        wallet_address=wallet_address,
+    )
 
-estimatedOutput = int(response['estimatedOutput'])
-finalAmountMin = int(estimatedOutput - estimatedOutput * slippage)
+    estimatedOutput = int(response['estimatedOutput'])
+    finalAmountMin = int(estimatedOutput - estimatedOutput * slippage)
 
-txn = contract.functions.executeTrades(
-    w3.toChecksumAddress(usdt_address),
-    w3.toChecksumAddress(usdc_address),
-    amount,
-    [
-        {
-            'moduleAddress': w3.toChecksumAddress(sushi_address),
-            'encodedCalldata': encodeSushi(
-                tf=usdt_address,
-                tt=usdc_address,
-                amount=amount,
-            )
-        },
-    ],
-    finalAmountMin,
-    w3.toChecksumAddress(wallet_address),
-).buildTransaction({
-        'type': '0x2',
-        'from': w3.toChecksumAddress(wallet_address),
-        'value': 0,
-        'gas': int(response['gasEstimate']),
-        'nonce': nonce,
-    })
+    txn = contract.functions.executeTrades(
+        w3.toChecksumAddress(usdt_address),
+        w3.toChecksumAddress(usdc_address),
+        amount,
+        [
+            {
+                'moduleAddress': w3.toChecksumAddress(sushi_address),
+                'encodedCalldata': encodeSushi(
+                    tf=usdt_address,
+                    tt=usdc_address,
+                    amount=amount,
+                )
+            },
+        ],
+        finalAmountMin,
+        w3.toChecksumAddress(wallet_address),
+    ).buildTransaction({
+            'type': '0x2',
+            'from': w3.toChecksumAddress(wallet_address),
+            'value': 0,
+            'gas': int(response['gasEstimate']),
+            'nonce': nonce,
+        })
 
-signed_txn = w3.eth.account.sign_transaction(txn, private_key=pk)
-tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-cprint(f'\nSUCCESS: https://polygonscan.com/tx/{w3.toHex(tx_hash)}', 'green')
+    signed_txn = w3.eth.account.sign_transaction(txn, private_key=pk)
+    tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+    cprint(f'>>> SUCCESS: https://polygonscan.com/tx/{w3.toHex(tx_hash)}', 'green')
