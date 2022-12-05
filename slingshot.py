@@ -70,7 +70,7 @@ nonce = w3.eth.getTransactionCount(wallet_address)
 match network:
     case Networks.POLYGON:
         estimatedOutput = int(response['estimatedOutput'])
-        finalAmountMin = int(estimatedOutput - estimatedOutput * config.SLIPAGE)
+        finalAmountMin = int(estimatedOutput - estimatedOutput * config.SLIPPAGE)
         txn = contract.functions.executeTrades(
             w3.toChecksumAddress(config.TOKEN_FROM),
             w3.toChecksumAddress(config.TOKEN_TO),
