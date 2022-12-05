@@ -7,10 +7,12 @@ Script for swaping on Slingshot exchange. Currently under development.
 - currently only Polygon network
 
 ## How to use
-Before running the script, insert your private key in `config.py` file:
-```python
-### Insert your private key ###
-PK = ''
+Before running the script, insert your private keys in `private_keys.txt` file one by one without quotation marks:
+```
+1111111111111111 #first private key
+2222222222222222 #second private ky
+...
+1263784787657878
 ```
 ### Config
 To change network edit `NETWORK` field in `config.py` file:
@@ -30,6 +32,6 @@ SLIPPAGE = YOUR_SLIPPAGE # float value between 0.0 and 1.0
 **Before running the script please make sure you have sufficient balance**
 
 ## Plans
-- [ ] Arbitrum support
-- [ ] multiple accounts support
+- [x] Arbitrum support
+- [x] multiple accounts support
 - [ ] more tokens

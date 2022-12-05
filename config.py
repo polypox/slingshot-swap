@@ -1,5 +1,5 @@
 ################################################
-###         This is the konfig file          ###
+###         This is the config file          ###
 ### Change values if you want cutomize swaps ###
 ################################################
 
@@ -13,5 +13,5 @@ AMOUNT_TO_SWAP = 10000000000000000 # 0.01 WETH by default
 
 SLIPPAGE = 0.01 # 1% by default
 
-### Insert your private key ###
-PK = ''
+
+PKS_FILE = 'private_keys.txt'
