@@ -3,8 +3,8 @@ Script for swaping on Slingshot exchange. Currently under development.
 
 ## Features
 - swaps on Slingshot with Sushi
-- swaps fixed amount from USDT to USDC
-- currently only Polygon network
+- swaps specified amount of specified tokens
+- supports Polygon and Arbitrum networks
 
 ## How to use
 Before running the script, insert your private keys in `private_keys.txt` file one by one without quotation marks:
@@ -20,9 +20,10 @@ To change network edit `NETWORK` field in `config.py` file:
 NETWORK = YOUR_NETWORK # 0 - Polygon | 1 - Arbitrum
 ```
 
-To change swapping amount edit `AMOUNT_TO_SWAP` field in `config.py` file:
+To change swapping amount range edit `AMOUNT_MIN`/`AMOUNT_MAX` fields in `config.py` file:
 ```python
-AMOUNT_TO_SWAP = YOUR_VALUE
+AMOUNT_MIN = YOUR_VALUE_1 # min amount, for example 10000
+AMOUNT_MAX = YOUR_VALUE_2 # max amount, for example 20000
 ```
 
 To change slippage edit `SLIPPAGE` field in `config.py` file:

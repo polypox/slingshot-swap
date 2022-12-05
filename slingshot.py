@@ -85,11 +85,12 @@ for (pk, wallet_address) in accounts:
     print(f'\n>>> Start swap for address {wallet_address}')
 
     try:
+        amount = random.randint(config.AMOUNT_MIN, config.AMOUNT_MAX)
         response = trade(
             network=network,
             tf=config.TOKEN_FROM, 
             tt=config.TOKEN_TO, 
-            amount=config.AMOUNT_TO_SWAP,
+            amount=amount,
             wallet_address=wallet_address,
         )
 
@@ -102,14 +103,14 @@ for (pk, wallet_address) in accounts:
                 txn = contract.functions.executeTrades(
                     w3.toChecksumAddress(config.TOKEN_FROM),
                     w3.toChecksumAddress(config.TOKEN_TO),
-                    config.AMOUNT_TO_SWAP,
+                    amount,
                     [
                         {
                             'moduleAddress': w3.toChecksumAddress(network_data['SUSHI_MODULE_ADDRESS']),
                             'encodedCalldata': encodeSushi(
                                 tf=config.TOKEN_FROM,
                                 tt=config.TOKEN_TO,
-                                amount=config.AMOUNT_TO_SWAP,
+                                amount=amount,
                             )
                         },
                     ],
