@@ -1,6 +1,8 @@
 DATA = {
+    'CHAIN_ID': 42161,
     'RPC': 'https://arb1.arbitrum.io/rpc',
     'SLINGSHOT_CONTRACT_ADDRESS': '0x5543550d65813c1Fa76242227CbBA0A28a297771',
     'SUSHI_MODULE_ADDRESS': '0x1742264ea4CCfd0f25d310BB8A0c92b2eB7c20b0',
+    'APPROVE_CONTRACT': '0x02dd3067bb257963a16e563a30f5d5c8c524ce3c',
     'SCANNER': 'https://arbiscan.io/tx/',
 }

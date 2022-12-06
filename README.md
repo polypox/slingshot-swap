@@ -4,7 +4,7 @@ Script for swaping on Slingshot exchange. Currently under development.
 ## Features
 - swaps on Slingshot with Sushi
 - swaps specified amount of specified tokens
-- supports Polygon and Arbitrum networks
+- supports Polygon, Arbitrum, and Optimism networks
 
 ## How to use
 Before running the script, insert your private keys in `private_keys.txt` file one by one without quotation marks:
@@ -17,7 +17,7 @@ Before running the script, insert your private keys in `private_keys.txt` file o
 ### Config
 To change network edit `NETWORK` field in `config.py` file:
 ```python
-NETWORK = YOUR_NETWORK # 0 - Polygon | 1 - Arbitrum
+NETWORK = YOUR_NETWORK # 0 - Polygon | 1 - Arbitrum | 2 - Optimism
 ```
 
 To change swapping amount range edit `AMOUNT_MIN`/`AMOUNT_MAX` fields in `config.py` file:
