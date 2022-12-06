@@ -8,9 +8,9 @@ Script for swaping on Slingshot exchange. Currently under development.
 
 ## How to use
 Before running the script, insert your private keys in `private_keys.txt` file one by one without quotation marks:
-```
+```python
 1111111111111111 #first private key
-2222222222222222 #second private ky
+2222222222222222 #second private key
 ...
 1263784787657878
 ```
