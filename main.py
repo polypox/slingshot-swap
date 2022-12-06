@@ -35,36 +35,35 @@ if __name__ == '__main__':
     for (pk, wallet_address) in accounts:
         print(f'\n>>> Start swap for address {wallet_address}')
         try:
-            spender_address = w3.toChecksumAddress(network_data['APPROVE_CONTRACT'])
-            allowance = token_utils.checkAllowance( 
-                token_contract=token_contract,
-                wallet_address=wallet_address,
-                spender_address=spender_address,
-            )
-            if not allowance:   
-                print(f'>>> Approving token spend for address {wallet_address}')
-                approve_tx_hash = token_utils.approveTokenSpend(
-                    token_contract=token_contract,
-                    wallet_address=w3.toChecksumAddress(wallet_address),
-                    spender_address=spender_address,
-                    pk=pk,
-                    w3=w3,
-                )
-                cprint(f'>>> APPROVED: {network_data["SCANNER"]}{w3.toHex(approve_tx_hash)}', 'green')
-
             amount = random.randint(config.AMOUNT_MIN, config.AMOUNT_MAX)
-            response = slingshot.trade(   
-            network=network,
-            tf=config.TOKEN_FROM, 
-            tt=config.TOKEN_TO, 
-            amount=amount,
-            wallet_address=wallet_address,
-        )
-
-            nonce = w3.eth.getTransactionCount(wallet_address)
             value = 0
             if (config.TOKEN_FROM == '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'): 
                 value = amount
+            else:
+                spender_address = w3.toChecksumAddress(network_data['APPROVE_CONTRACT'])
+                allowance = token_utils.checkAllowance( 
+                    token_contract=token_contract,
+                    wallet_address=w3.toChecksumAddress(wallet_address),
+                    spender_address=spender_address,
+                )
+                if not allowance:   
+                    print(f'>>> Approving token spend for address {wallet_address}')
+                    approve_tx_hash = token_utils.approveTokenSpend(
+                        token_contract=token_contract,
+                        wallet_address=w3.toChecksumAddress(wallet_address),
+                        spender_address=spender_address,
+                        pk=pk,
+                        w3=w3,
+                    )
+                    cprint(f'>>> APPROVED: {network_data["SCANNER"]}{w3.toHex(approve_tx_hash)}', 'green')
+
+            response = slingshot.trade(   
+                network=network,
+                tf=config.TOKEN_FROM, 
+                tt=config.TOKEN_TO, 
+                amount=amount,
+                wallet_address=wallet_address,
+            )
 
             if network == Networks.POLYGON:
                 estimatedOutput = int(response['estimatedOutput'])
@@ -90,7 +89,7 @@ if __name__ == '__main__':
                         'from': w3.toChecksumAddress(wallet_address),
                         'value': value,
                         'gas': int(response['gasEstimate']),
-                        'nonce': nonce,
+                        'nonce': w3.eth.getTransactionCount(wallet_address),
                     })
             else:
                 txn = {
@@ -100,7 +99,7 @@ if __name__ == '__main__':
                     'from': w3.toChecksumAddress(wallet_address),
                     'value': value,
                     'gasPrice': w3.eth.gas_price,
-                    'nonce': nonce,
+                    'nonce': w3.eth.getTransactionCount(wallet_address),
                     'to': network_data['SLINGSHOT_CONTRACT_ADDRESS']
                 }
 
